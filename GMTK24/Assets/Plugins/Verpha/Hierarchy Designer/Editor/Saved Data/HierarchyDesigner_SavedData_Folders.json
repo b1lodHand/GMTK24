@@ -1,0 +1,76 @@
+{
+    "items": [
+        {
+            "Name": "_UTILITIES",
+            "TextColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "FontSize": 12,
+            "FontStyle": 0,
+            "ImageColor": {
+                "r": 0.6824178695678711,
+                "g": 0.5330633521080017,
+                "b": 0.9339622855186462,
+                "a": 1.0
+            },
+            "ImageType": 0
+        },
+        {
+            "Name": "_MANAGERS",
+            "TextColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "FontSize": 12,
+            "FontStyle": 0,
+            "ImageColor": {
+                "r": 1.0,
+                "g": 0.4858490824699402,
+                "b": 0.4858490824699402,
+                "a": 1.0
+            },
+            "ImageType": 0
+        },
+        {
+            "Name": "_ENVIRONMENT",
+            "TextColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "FontSize": 12,
+            "FontStyle": 0,
+            "ImageColor": {
+                "r": 0.8235294222831726,
+                "g": 1.0,
+                "b": 0.5411764979362488,
+                "a": 1.0
+            },
+            "ImageType": 0
+        },
+        {
+            "Name": "_CANVASES",
+            "TextColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "FontSize": 12,
+            "FontStyle": 0,
+            "ImageColor": {
+                "r": 0.5411764979362488,
+                "g": 0.8352941274642944,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "ImageType": 0
+        }
+    ]
+}
