@@ -1,4 +1,5 @@
 using com.absence.personsystem;
+using com.game.scaling.generics;
 
 namespace com.game.interactables
 {
@@ -6,6 +7,7 @@ namespace com.game.interactables
     public class InteractorData
     {
         public Person Person;
+        public EntityScaler Scaler; 
 
         public bool IsPlayer()
         {

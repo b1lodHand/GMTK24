@@ -55,6 +55,15 @@ namespace com.game.misc
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""69f31d7f-5a95-4292-8f25-6be7f81f3f40"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -209,6 +218,28 @@ namespace com.game.misc
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""SwitchInteractable"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f822a2ec-15c1-47ff-a73e-dfcb2c5804f1"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4c6ae31f-d2ae-4d90-9992-17192b850a96"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -756,6 +787,7 @@ namespace com.game.misc
             m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
             m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
             m_Player_SwitchInteractable = m_Player.FindAction("SwitchInteractable", throwIfNotFound: true);
+            m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -838,6 +870,7 @@ namespace com.game.misc
         private readonly InputAction m_Player_Move;
         private readonly InputAction m_Player_Interact;
         private readonly InputAction m_Player_SwitchInteractable;
+        private readonly InputAction m_Player_Attack;
         public struct PlayerActions
         {
             private @PlayerInputActions m_Wrapper;
@@ -845,6 +878,7 @@ namespace com.game.misc
             public InputAction @Move => m_Wrapper.m_Player_Move;
             public InputAction @Interact => m_Wrapper.m_Player_Interact;
             public InputAction @SwitchInteractable => m_Wrapper.m_Player_SwitchInteractable;
+            public InputAction @Attack => m_Wrapper.m_Player_Attack;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -863,6 +897,9 @@ namespace com.game.misc
                 @SwitchInteractable.started += instance.OnSwitchInteractable;
                 @SwitchInteractable.performed += instance.OnSwitchInteractable;
                 @SwitchInteractable.canceled += instance.OnSwitchInteractable;
+                @Attack.started += instance.OnAttack;
+                @Attack.performed += instance.OnAttack;
+                @Attack.canceled += instance.OnAttack;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -876,6 +913,9 @@ namespace com.game.misc
                 @SwitchInteractable.started -= instance.OnSwitchInteractable;
                 @SwitchInteractable.performed -= instance.OnSwitchInteractable;
                 @SwitchInteractable.canceled -= instance.OnSwitchInteractable;
+                @Attack.started -= instance.OnAttack;
+                @Attack.performed -= instance.OnAttack;
+                @Attack.canceled -= instance.OnAttack;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -1126,6 +1166,7 @@ namespace com.game.misc
             void OnMove(InputAction.CallbackContext context);
             void OnInteract(InputAction.CallbackContext context);
             void OnSwitchInteractable(InputAction.CallbackContext context);
+            void OnAttack(InputAction.CallbackContext context);
         }
         public interface IUIActions
         {

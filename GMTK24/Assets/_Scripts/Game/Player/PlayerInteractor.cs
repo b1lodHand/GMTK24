@@ -126,6 +126,7 @@ namespace com.game.player
         {
             InteractorData data = new();
             data.Person = Player.Instance.Person;
+            data.Scaler = Player.Instance.Hub.Scaler;
 
             return data;
         }

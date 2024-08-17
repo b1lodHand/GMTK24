@@ -1,5 +1,6 @@
 using com.game.input;
 using com.game.misc;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -23,6 +24,7 @@ namespace com.game.player
             inputActions.Player.Move.canceled += OnStop;
             inputActions.Player.Interact.performed += OnInteract;
             inputActions.Player.SwitchInteractable.performed += OnInteractableSwitched;
+            inputActions.Player.Attack.performed += OnAttack;
 
             // ui
             inputActions.UI.Cancel.performed += OnCancel;
@@ -49,6 +51,7 @@ namespace com.game.player
             inputActions.Player.Move.canceled -= OnStop;
             inputActions.Player.Interact.performed -= OnInteract;
             inputActions.Player.SwitchInteractable.performed -= OnInteractableSwitched;
+            inputActions.Player.Attack.performed -= OnAttack;
 
             // ui
             inputActions.UI.Cancel.performed -= OnCancel;
@@ -82,6 +85,10 @@ namespace com.game.player
         {
             Vector2 movement = context.ReadValue<Vector2>();
             InputEventChannel.Player.ReceiveMovementInput(movement);
+        }
+        private void OnAttack(InputAction.CallbackContext context)
+        {
+            InputEventChannel.Player.ReceiveAttackInput();
         }
         #endregion
 

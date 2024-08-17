@@ -1,4 +1,3 @@
-
 using System;
 using UnityEngine;
 
@@ -28,11 +27,15 @@ namespace com.game.input
             public static event Action OnSwitchInteractionInput = null;
             public static void ReceiveSwitchInteractionInput() => OnSwitchInteractionInput?.Invoke();
 
+            public static event Action OnAttackInput = null;
+            public static void ReceiveAttackInput() => OnAttackInput?.Invoke();
+
             public static void Reset()
             {
                 OnMovementInput = null;
                 OnInteractionInput = null;
                 OnSwitchInteractionInput = null;
+                OnAttackInput = null;
             }
         }
 
@@ -60,16 +63,12 @@ namespace com.game.input
             public static event Action OnDialogueSkipInput = null;
             public static void ReceiveDialogueSkipInput() => OnDialogueSkipInput?.Invoke();
 
-            //public static event Action OnDialogueTryToExitInput = null;
-            //public static void ReceiveDialogueTryToExitInput() => OnDialogueTryToExitInput?.Invoke();
-
             public static event Action<float> OnScrollInput = null;
             public static void ReceiveScrollInput(float scrollDelta) => OnScrollInput?.Invoke(scrollDelta);
 
             public static void Reset()
             {
                 OnDialogueSkipInput = null;
-                //OnDialogueTryToExitInput = null;
                 OnScrollInput = null;
             }
         }

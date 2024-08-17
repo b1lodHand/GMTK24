@@ -135,11 +135,13 @@ namespace com.game.player
         void SetupTweenForWalk()
         {
             if (m_tweener != null) m_tweener.Kill();
+            if (!m_squeesh) return;
         }
 
         void SetupTweenForIdle()
         {
             if (m_tweener != null) m_tweener.Kill();
+            if (!m_squeesh) return;
 
             m_tweener = m_renderer.transform
             .DOScaleY((m_squeeshAmplitude + 1) * m_renderer.transform.localScale.y, (1 / m_squeeshSpeed))

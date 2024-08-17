@@ -398,7 +398,7 @@ MonoBehaviour:
   m_debugMode: 0
   m_animator: {fileID: 1879549739175922663}
   m_renderer: {fileID: 6926265923504290411}
-  m_squeesh: 1
+  m_squeesh: 0
   m_squeeshSpeed: 5
   m_squeeshAmplitude: 0.1
   m_squeeshEase: 4
@@ -525,6 +525,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_debugMode: 1
   m_defaultCombo: {fileID: 11400000, guid: bec2b8e7edfaba44d8f863b4970b1638, type: 2}
+  m_attackCooldown: 0.1
 --- !u!1 &8190109622331770450
 GameObject:
   m_ObjectHideFlags: 0

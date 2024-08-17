@@ -18,15 +18,10 @@ namespace com.game.scaling.generics
 
         protected override void Interact_Internal(InteractorData sender)
         {
-            ScaleInteractorData data = sender as ScaleInteractorData;
+            if (m_scaleMode == ScaleMode.ScaleUp) sender.Scaler.ScaleUp(m_mass);
+            else if (m_scaleMode == ScaleMode.ScaleDown) sender.Scaler.ScaleDown(m_mass);
 
-            if (m_scaleMode == ScaleMode.ScaleUp) data.Scaler.ScaleUp(m_mass);
-            else if (m_scaleMode == ScaleMode.ScaleDown) data.Scaler.ScaleDown(m_mass);
+            Destroy(gameObject);
         }
-    }
-
-    public class ScaleInteractorData : InteractorData
-    {
-        public EntityScaler Scaler;
     }
 }

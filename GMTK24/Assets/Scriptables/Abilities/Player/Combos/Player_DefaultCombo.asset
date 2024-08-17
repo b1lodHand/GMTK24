@@ -16,4 +16,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a976ecd726534a045bb8cd2123e5bd53, type: 2}
   - {fileID: 11400000, guid: 26abc80b66c263640a42d40ba08d7f68, type: 2}
   - {fileID: 11400000, guid: c2377bae93d4dae4b8b7ce9f21aa6e95, type: 2}
-  m_maxTimeBetween: 1
+  m_maxTimeBetween: 0.6
