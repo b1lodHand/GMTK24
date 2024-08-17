@@ -8,4 +8,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Templates/Empty 2D.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: fd2e650cd1cd0d848bcf55a0a560eda6, type: 2}

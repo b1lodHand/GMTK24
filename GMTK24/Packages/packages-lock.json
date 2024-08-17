@@ -5,21 +5,21 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "c32f27350651bf33a89d2a499731292245ca6326"
+      "hash": "37e2c2bc61c863f5524a0d351d9cb8a0a644a358"
     },
     "com.absence.consolesystem": {
       "version": "https://github.com/b1lodHand/absent-console.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "9dfc59a46f49592afb2ff8e3e29bb7436b4c556b"
+      "hash": "9149980cfbeea41e642f3c3da1ebcaa6db042b09"
     },
     "com.absence.editor": {
       "version": "https://github.com/b1lodHand/absent-editor.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "fd70504babcfd71a26bca90f09617f3f0909768e"
+      "hash": "a2fb16d8bd294db11745322e1235a9968c1111b5"
     },
     "com.absence.memory": {
       "version": "https://github.com/b1lodHand/absent-memories.git",
@@ -33,7 +33,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "791e9c85d21dc18dfdb16dbe585f26028e0f6217"
+      "hash": "5b360321be4bf964f670ce9b226a946f64a9746c"
     },
     "com.absence.savesystem": {
       "version": "https://github.com/b1lodHand/absent-saves.git",
@@ -47,7 +47,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "d5a13e49c61559dbe93253d38e900e6b47452707"
+      "hash": "a9efd6f20e3d86b92d60a7fd50b68953ce760160"
     },
     "com.absence.timersystem": {
       "version": "https://github.com/b1lodHand/absent-timers.git",
@@ -75,7 +75,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "b88c0161d040cb048eaa9e7763c68c643db9d7b6"
+      "hash": "c761479488f7ad08418d3fdaeb931d5961f7a96d"
     },
     "com.unity.2d.animation": {
       "version": "9.0.4",

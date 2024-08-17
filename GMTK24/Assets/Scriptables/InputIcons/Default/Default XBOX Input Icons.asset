@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cefb1036da600042b223290a52ce633, type: 3}
+  m_Name: Default XBOX Input Icons
+  m_EditorClassIdentifier: 
+  m_debugMode: 0
+  m_deviceType: 5
+  m_otherAcceptedDeviceNames: []
+  m_touchPad: {fileID: 0}
+  m_options: {fileID: 21300000, guid: e212101c8e652c84999c231090f38b5e, type: 3}
+  m_share: {fileID: 21300000, guid: dbb91b479b78d724eac8c94f610cab03, type: 3}
+  m_leftTrigger: {fileID: 21300000, guid: 28d0842db48e87842a95446109c9f6ca, type: 3}
+  m_leftButton: {fileID: 21300000, guid: 7b9255fabe5cb5f47bcc6d1efea0c96d, type: 3}
+  m_rightTrigger: {fileID: 21300000, guid: bd052f2b12109a1459c413c0a018790e, type: 3}
+  m_rightButton: {fileID: 21300000, guid: f8d316fddb429394bb0f78cce3f36aad, type: 3}
+  m_up: {fileID: 21300000, guid: 8086c8f3f7d81024e991d5c794be25e2, type: 3}
+  m_down: {fileID: 21300000, guid: 04fa3df84fd91e64d8d39ec7a14bf509, type: 3}
+  m_left: {fileID: 21300000, guid: 8508796806bc5db4398d6e44df11ed31, type: 3}
+  m_right: {fileID: 21300000, guid: a320e7761ade3fa4fb240d40053ddf36, type: 3}
+  m_horizontal: {fileID: 21300000, guid: 8135e260ff8c700459ff37ce1f48103b, type: 3}
+  m_vertical: {fileID: 21300000, guid: 764aa48e278c26445a973886affa29ac, type: 3}
+  m_control: {fileID: 21300000, guid: 61b54a964a81a92478ca5d9b2c7653dc, type: 3}
+  m_buttonNorth: {fileID: 21300000, guid: a39d4ce4a593f314ea41af09a8fd4fdc, type: 3}
+  m_buttonSouth: {fileID: 21300000, guid: 6f0833fcd4d8dd64da1ee1189ce0c5b4, type: 3}
+  m_buttonWest: {fileID: 21300000, guid: a3afedc0e043d7a4492559ed697f1ea8, type: 3}
+  m_buttonEast: {fileID: 21300000, guid: a0d1db5f46de21f46a0f104de35dc10b, type: 3}
+  m_leftStickUp: {fileID: 21300000, guid: 2d280f05eb3c3c448af5e73f1b7d873e, type: 3}
+  m_leftStickDown: {fileID: 21300000, guid: fd22e59762b62794c9f3f77ed9a3224a, type: 3}
+  m_leftStickLeft: {fileID: 21300000, guid: 202d0d8c2fe8bfd47841898f1464725b, type: 3}
+  m_leftStickRight: {fileID: 21300000, guid: a04b2a12ef2931c41bdb5f39cfcff603, type: 3}
+  m_leftStickHorizontal: {fileID: 21300000, guid: a2d4f78b51831b143ac590dbcdf78173, type: 3}
+  m_leftStickVertical: {fileID: 21300000, guid: 668325fc190164f46b30aab1144726ed, type: 3}
+  m_leftStickMove: {fileID: 21300000, guid: 4181cd3b4bc4c3243b66f2d75a4ccdf1, type: 3}
+  m_leftStickPress: {fileID: 21300000, guid: 9a860e848701fc14e8928d9c98e405d3, type: 3}
+  m_rightStickUp: {fileID: 21300000, guid: 32f49f2ffaa3c7d4083aa229e9d58777, type: 3}
+  m_rightStickDown: {fileID: 21300000, guid: e3e9c48d852f8ba4383257386bb5f425, type: 3}
+  m_rightStickLeft: {fileID: 21300000, guid: cb4a0abd0a81b1843a347fb9cc6cb8d3, type: 3}
+  m_rightStickRight: {fileID: 21300000, guid: 4da4b70532ff242498b04630d144bc03, type: 3}
+  m_rightStickHorizontal: {fileID: 21300000, guid: 6e35e9b81e699bf478ed2681e1984632, type: 3}
+  m_rightStickVertical: {fileID: 21300000, guid: ca24dd170ae85f946b1345f3e19fc12b, type: 3}
+  m_rightStickMove: {fileID: 21300000, guid: ce42c1367a3378c4788e1071f3e4944a, type: 3}
+  m_rightStickPress: {fileID: 21300000, guid: 4ae48a4c3cdced940a8fc9d5a2fb1862, type: 3}

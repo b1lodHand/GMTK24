@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d20ace96a67ae5c44ac9bdf24b5fb6c5, type: 3}
+  m_Name: DefaultIIP
+  m_EditorClassIdentifier: 
+  m_mouseIcons: {fileID: 11400000, guid: c30703d0c2b2e1e449512112fdfa6c63, type: 2}
+  m_keyboardIcons: {fileID: 11400000, guid: acf88599e2554064b99b08cabfb2d050, type: 2}
+  m_PS4Icons: {fileID: 11400000, guid: 3c71ce892dee7de47b1803c625f73e5d, type: 2}
+  m_PS5Icons: {fileID: 11400000, guid: dce228be65283fd4795ca31902c5b7a9, type: 2}
+  m_XBOXIcons: {fileID: 11400000, guid: f314820a11132994e917be3979f6ada0, type: 2}

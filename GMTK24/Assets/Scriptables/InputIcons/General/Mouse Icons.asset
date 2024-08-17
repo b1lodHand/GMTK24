@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a41922ffdc71ec4a8091886cec68f47, type: 3}
+  m_Name: Mouse Icons
+  m_EditorClassIdentifier: 
+  m_deviceType: 1
+  m_otherAcceptedDeviceNames: []
+  m_move: {fileID: 21300000, guid: a6ce5afd560aa124c89a25ef409d9880, type: 3}
+  m_vertical: {fileID: 21300000, guid: 75cf430ce618e6a49812a8333e8988a4, type: 3}
+  m_horizontal: {fileID: 21300000, guid: 2079041aae3009440971e09aa0edd52d, type: 3}
+  m_leftButton: {fileID: 21300000, guid: 82f51ad017a44574faa483a571d8ddca, type: 3}
+  m_rightButton: {fileID: 21300000, guid: 929fbace1cfc69748bdb2b87029b2c5a, type: 3}
+  m_scrollForward: {fileID: 21300000, guid: e2c2b77ce5525ae41a1c05eacd96cc28, type: 3}
+  m_scrollBackwards: {fileID: 21300000, guid: ba4f068be4564764190ce32796316e7f, type: 3}
+  m_scrollMove: {fileID: 21300000, guid: 7b4d46d722ced914ba1f785bd42c4e9c, type: 3}
+  m_scrollPress: {fileID: 21300000, guid: a60ebe49135a6674ea641d5f4880c321, type: 3}
