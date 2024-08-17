@@ -9,6 +9,9 @@ namespace com.game.player
 {
     public class Player : Singleton<Player>
     {
+        [SerializeField] private PlayerComponentHub m_componentHub;
+        public PlayerComponentHub Hub => m_componentHub;
+
         [SerializeField] private Person m_person;   
         public Person Person => m_person;
 

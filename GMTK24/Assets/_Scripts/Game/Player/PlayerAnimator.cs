@@ -1,5 +1,8 @@
 using com.game.input;
 using com.game.misc;
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,9 +41,20 @@ namespace com.game.player
             { s_walk_side, Animator.StringToHash(s_walk_side) },
         };
 
+        [Header("Initial Fields")]
+
         [SerializeField] private bool m_debugMode = false;
         [SerializeField] private Animator m_animator;
         [SerializeField] private SpriteRenderer m_renderer;
+
+        [Header("Squeesh Effect")]
+
+        [SerializeField] private bool m_squeesh = true;
+        [SerializeField][Min(0.01f)] private float m_squeeshSpeed;
+        [SerializeField] private float m_squeeshAmplitude;
+        [SerializeField] private Ease m_squeeshEase = Ease.InOutSine;
+
+        TweenerCore<Vector3, Vector3, VectorOptions> m_tweener = null;
 
         Vector2 m_previousMovement = Vector2.zero;
         Vector2 m_currentMovement;
@@ -94,16 +108,46 @@ namespace com.game.player
             if (InputManager.Instance.IsKeyboardAndMouse) m_inputLogic = InputLogic.KeyboardAndMouse;
             else if (InputManager.Instance.IsGamepad) m_inputLogic = InputLogic.Gamepad;
         }
+
         void Crossfade()
         {
             int targetHash = s_hashes[m_moveState + m_directionState];
             m_animator.CrossFade(targetHash, 0f, 0);
         }
+
         void SetMoveState()
         {
-            if (m_currentMovement == Vector2.zero) m_moveState = k_idle;
-            else m_moveState = k_walk;
+            if (m_currentMovement == Vector2.zero)
+            {
+                m_moveState = k_idle;
+
+                SetupTweenForIdle();
+            }
+
+            else
+            {
+                m_moveState = k_walk;
+
+                SetupTweenForWalk();
+            }
         }
+
+        void SetupTweenForWalk()
+        {
+            if (m_tweener != null) m_tweener.Kill();
+        }
+
+        void SetupTweenForIdle()
+        {
+            if (m_tweener != null) m_tweener.Kill();
+
+            m_tweener = m_renderer.transform
+            .DOScaleY((m_squeeshAmplitude + 1) * m_renderer.transform.localScale.y, (1 / m_squeeshSpeed))
+            .SetEase(m_squeeshEase)
+            .SetLoops(-1, LoopType.Yoyo)
+            .OnKill(() => m_tweener = null);
+        }
+
         void SetDirectionState()
         {
             if (m_inputLogic == InputLogic.KeyboardAndMouse) SetDirectionState_Keyboard();
@@ -174,6 +218,7 @@ namespace com.game.player
                 else if (m_rasterizedGamepadDirection.Equals(Vector2.left) && m_facingRight) Flip();
             }
         }
+
         void HandleStop()
         {
             m_moveState = k_idle;

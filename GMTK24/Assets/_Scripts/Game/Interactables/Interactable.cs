@@ -1,3 +1,4 @@
+using com.absence.attributes;
 using System;
 using UnityEngine;
 
@@ -9,6 +10,14 @@ namespace com.game.interactables
         public event Action OnInteract = null;
         public event Action OnSelectedByPlayer = null;
         public event Action OnUnselectedByPlayer = null;
+
+        [SerializeField] private bool m_useCustomMessageTextPosition = false;
+        [SerializeField, ShowIf(nameof(m_useCustomMessageTextPosition))] private Transform m_customMessageTextTransform;
+
+        public virtual string CustomInteractionMessageForPlayer { get; } = "Interact";
+        public Vector2 GetCustomTextMessagePosition() => m_customMessageTextTransform.position;
+
+        public bool UseCustomMessageTextPosition => m_useCustomMessageTextPosition;
 
         public void Interact(InteractorData interactor)
         {

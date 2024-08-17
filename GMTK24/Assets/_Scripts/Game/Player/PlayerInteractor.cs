@@ -1,6 +1,7 @@
 using com.absence.attributes;
 using com.game.input;
 using com.game.interactables;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,6 +19,10 @@ namespace com.game.player
         Collider2D[] m_foundColliders;
         int m_selectedInteractableIndex = 0;
 
+        public event Action<Interactable> OnSelectedInteractableChanged;
+
+        public bool CanInteract => (!Player.Instance.InDialogue) && (!InputManager.Instance.InUI) && (!InputManager.Instance.InRebindProcess);
+
         private void Awake()
         {
             m_foundColliders = new Collider2D[m_maxInteractables];
@@ -34,6 +39,8 @@ namespace com.game.player
 
         private void OnInteract()
         {
+            if (!CanInteract) return;
+
             Interactable interactable = GetTargetInteractable();
             if (interactable == null)
             {
@@ -54,8 +61,10 @@ namespace com.game.player
             ClampTargetIndex();
 
             SetSelectedOfTarget(true);
-
             Interactable target = GetTargetInteractable();
+
+            OnSelectedInteractableChanged?.Invoke(target);
+
             if (target == null) return;
 
             if (m_debugMode) Debug.Log($"switched interactable: '{target.gameObject.name}'.");
@@ -85,6 +94,9 @@ namespace com.game.player
                 SetSelectedOfTarget(true);
             }
 
+            Interactable target = GetTargetInteractable();
+            if (target != previousTarget) OnSelectedInteractableChanged?.Invoke(target);
+
             if (m_debugMode) Debug.Log($"found interactables: '{m_foundInteractables.Count}'");
         }
 
@@ -100,7 +112,7 @@ namespace com.game.player
             if (m_selectedInteractableIndex >= m_foundInteractables.Count) m_selectedInteractableIndex -= m_foundInteractables.Count;
         }
 
-        Interactable GetTargetInteractable()
+        public Interactable GetTargetInteractable()
         {
             if (m_foundInteractables.Count == 0) return null;
             if (m_selectedInteractableIndex >= m_foundInteractables.Count) return null;
