@@ -1,23 +1,29 @@
 using com.absence.attributes;
 using com.absence.timersystem;
-using com.game.player;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Build.Pipeline;
 using UnityEngine;
 
 namespace com.game.abilities
 {
     public class AbilityUser : MonoBehaviour
     {
-        [SerializeField] private bool m_usedByPlayer = false;
+        [Header("Initial Fields")]
+
+        [SerializeField] private bool m_dataSetExternally = false;
+        [SerializeField, HideIf(nameof(m_dataSetExternally))] private AbilityUserData m_data = new();
+
+        [Header("Database")]
+
         [SerializeField] private List<AbilityEntry> m_abilities = new();
         [SerializeField] private List<ComboEntry> m_combos = new();
-        [SerializeField] private Ability m_activeAbility;
-        [SerializeField] private Combo m_activeCombo;
+
+        [Header("Runtime")]
+
+        [SerializeField, Readonly] private Ability m_activeAbility;
+        [SerializeField, Readonly] private Combo m_activeCombo;
 
         List<ComboEntry> m_possibleCombos;
-        AbilityUserData m_data;
         Timer m_comboTimer;
         int m_comboIndex;
 
@@ -27,22 +33,31 @@ namespace com.game.abilities
         private void Start()
         {
             m_abilities.ForEach(entry => entry.Initialize());
-            m_data = new();
+            m_combos.ForEach(entry => entry.Initialize());
 
             ResetCombos();
 
-            if (m_usedByPlayer) m_data.Person = Player.Instance.Person;
+            if (!m_dataSetExternally) m_data = new();
         }
 
-        public bool UseAbility(Ability ability)
+        public bool UseAbility(Ability ability, bool ignoreCombos = false)
         {
             if (m_activeAbility != null) return false;
+            if (ability == null) return false;
 
             AbilityEntry targetEntry = m_abilities.Where(entry => entry.Ability.Equals(ability)).FirstOrDefault();
             if (targetEntry == null) return false;
+            if (!targetEntry.IsUnlocked) return false;
 
             Ability targetAbility = targetEntry.GetUsableAbility();
             if (!targetAbility.CanUse(m_data)) return false;
+
+            if(ignoreCombos)
+            {
+                ResetCombos();
+                Cast();
+                return true;
+            }
 
             m_possibleCombos.RemoveAll(entry =>
             {
@@ -56,12 +71,14 @@ namespace com.game.abilities
                 return false;
             });
 
-            if (m_comboTimer != null) m_comboTimer.Fail();
+            if (m_comboTimer != null) ForceEndComboTimer();
 
             if(m_possibleCombos.Count > 0)
             {
                 m_activeCombo = m_possibleCombos.FirstOrDefault().Combo;
+
                 m_comboIndex++;
+                if (m_comboIndex == m_activeCombo.AbilityCount) m_comboIndex = 0;
 
                 targetAbility.OnEnd += () =>
                 {
@@ -83,9 +100,31 @@ namespace com.game.abilities
                 targetAbility.Use(m_data);
             }
         }
-        
+        public bool UseCombo(Combo combo)
+        {
+            if (combo == null) return false;
+            if (!m_combos.Any(entry => entry.Combo.Equals(combo))) return false;
+
+            if (m_activeCombo != combo)
+            {
+                ResetCombos();
+                m_activeCombo = combo;
+            }
+
+            return UseAbility(m_activeCombo.GetAbilityAt(m_comboIndex));
+        }
+
+        public bool SetData(AbilityUserData data)
+        {
+            if(!m_dataSetExternally) return false;
+
+            m_data = data;
+            return true;
+        }
+
         void StartComboTimer()
         {
+            ForceEndComboTimer();
             m_comboTimer = Timer.Create(m_activeCombo.TimeThreshold, null, s =>
             {
                 m_comboTimer = null;
@@ -93,6 +132,8 @@ namespace com.game.abilities
 
                 ResetCombos();
             });
+
+            m_comboTimer.Start();
         }
 
         void ForceEndComboTimer()
@@ -104,7 +145,7 @@ namespace com.game.abilities
         void ResetCombos()
         {
             m_comboIndex = 0;
-            m_possibleCombos = new(m_combos);
+            m_possibleCombos = new(m_combos.Where(entry => entry.IsUnlocked));
         }
 
         [System.Serializable]

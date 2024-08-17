@@ -1,12 +1,13 @@
 using com.absence.personsystem;
 using com.game.player;
+using UnityEngine;
 
 namespace com.game.abilities
 {
     [System.Serializable]
     public class AbilityUserData
     {
-        public Person Person { get; set; }
+        [field: SerializeField] public Person Person { get; set; }
 
         public AbilityUserData() 
         { 
