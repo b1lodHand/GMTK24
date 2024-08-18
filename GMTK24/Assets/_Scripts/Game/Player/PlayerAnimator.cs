@@ -1,45 +1,25 @@
+using com.absence.attributes;
 using com.game.input;
-using com.game.misc;
-using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
-using System.Collections.Generic;
+//using DG.Tweening;
 using UnityEngine;
 
 namespace com.game.player
 {
     public class PlayerAnimator : MonoBehaviour
     {
-        private enum InputLogic
+        public enum MoveDirection
         {
-            KeyboardAndMouse = 0,
-            Gamepad = 1,
+            Up = 0,
+            Side = 1,
         }
 
-        const string k_up_suffix = "_up";
-        const string k_down_suffix = "_down";
-        const string k_side_suffix = "_side";
-
-        const string k_idle = "idle";
-        const string k_walk = "walk";
-
-        static readonly string s_idle_up = k_idle + k_up_suffix;
-        static readonly string s_idle_down = k_idle + k_down_suffix;
-        static readonly string s_idle_side = k_idle + k_side_suffix;
-
-        static readonly string s_walk_up = k_walk + k_up_suffix;
-        static readonly string s_walk_down = k_walk + k_down_suffix;
-        static readonly string s_walk_side = k_walk + k_side_suffix;
-
-        static readonly Dictionary<string, int> s_hashes = new Dictionary<string, int>()
-        {
-            { s_idle_up, Animator.StringToHash(s_idle_up) },
-            { s_idle_down, Animator.StringToHash(s_idle_down) },
-            { s_idle_side, Animator.StringToHash(s_idle_side) },
-            { s_walk_up, Animator.StringToHash(s_walk_up) },
-            { s_walk_down, Animator.StringToHash(s_walk_down) },
-            { s_walk_side, Animator.StringToHash(s_walk_side) },
-        };
+        static readonly int s_idle_side_hash = Animator.StringToHash("player_idle_side");
+        static readonly int s_idle_up_hash = Animator.StringToHash("player_idle_up");
+        static readonly int s_walk_side_hash = Animator.StringToHash("player_walk_side");
+        static readonly int s_walk_up_hash = Animator.StringToHash("player_walk_up");
+        static readonly int s_eat_hash = Animator.StringToHash("player_eat");
+        static readonly int s_chew_hash = Animator.StringToHash("player_chew");
+        static readonly int s_chew_walk_hash = Animator.StringToHash("player_chew_while_walk");
 
         [Header("Initial Fields")]
 
@@ -47,49 +27,123 @@ namespace com.game.player
         [SerializeField] private Animator m_animator;
         [SerializeField] private SpriteRenderer m_renderer;
 
-        [Header("Squeesh Effect")]
+        //[Header("Squeesh Effect")]
 
-        [SerializeField] private bool m_squeesh = true;
-        [SerializeField][Min(0.01f)] private float m_squeeshSpeed;
-        [SerializeField] private float m_squeeshAmplitude;
-        [SerializeField] private Ease m_squeeshEase = Ease.InOutSine;
+        //[SerializeField] private bool m_squeesh = true;
+        //[SerializeField] [Min(0.01f)] private float m_squeeshSpeed;
+        //[SerializeField] private float m_squeeshAmplitude;
+        //[SerializeField] private Ease m_squeeshEase = Ease.InOutSine;
 
-        TweenerCore<Vector3, Vector3, VectorOptions> m_tweener = null;
+        [Header("Runtime")]
+        [SerializeField, Readonly] bool m_isFacingRight = true;
 
-        Vector2 m_previousMovement = Vector2.zero;
-        Vector2 m_currentMovement;
-        Vector2 m_rasterizedGamepadDirection = Vector2.zero;
-        string m_moveState = k_idle;
-        string m_directionState = k_side_suffix;
-
-        bool m_facingRight = true;
+        MoveDirection m_lastMoveDirection;
+        Vector2 m_lastMovementInput;
         bool m_handledByCombatSystem = false;
-        InputLogic m_inputLogic = InputLogic.KeyboardAndMouse;
+        bool m_isChewing = false;
+        bool m_inEatAnimation = false;
 
-        private void Awake()
+        bool p_isMoving => m_lastMovementInput != Vector2.zero;
+        bool p_isAttacking => Player.Instance.IsAttacking;
+        bool p_lastMovedUp => m_lastMoveDirection == MoveDirection.Up;
+
+        private void Start()
         {
             InputEventChannel.Player.OnMovementInput += OnMove;
+            PlayerEventChannel.OnStartChewing += OnStartChewing;
+            PlayerEventChannel.OnStopChewing += OnStopChewing;
+
+            m_isFacingRight = true;
+            CrossfadeSide();
         }
 
-        private void Update()
+        void CrossfadeSide()
         {
-            Cleanup();
+            if (p_isMoving) m_animator.CrossFade(s_walk_side_hash, 0f, 0);
+            else m_animator.CrossFade(s_idle_side_hash, 0f, 0);
+        }
+
+        void CrossfadeUp()
+        {
+            if (p_isMoving) m_animator.CrossFade(s_walk_up_hash, 0f, 0);
+            else m_animator.CrossFade(s_idle_up_hash, 0f, 0);
+        }
+
+        private void OnStartChewing()
+        {
+            if (p_isAttacking) return;
+
+            m_isChewing = true;
+            m_inEatAnimation = true;
+
+            m_animator.CrossFade(s_eat_hash, 0f, 0);
+        }
+
+        private void OnStopChewing()
+        {
+            if (p_isAttacking) return;
+
+            m_isChewing = false;
+
+            if (p_lastMovedUp) CrossfadeUp();
+            else CrossfadeSide();
         }
 
         private void OnMove(Vector2 vector)
         {
             if (m_debugMode) Debug.Log($"move: ({vector.x}, {vector.y})");
 
-            m_currentMovement = vector;
+            m_lastMovementInput = vector;
 
-            CacheVariables();
-            SetMoveState();
-            SetDirectionState();
+            if (p_isMoving)
+            {
+                if (vector.y > 0f) m_lastMoveDirection = MoveDirection.Up;
+                else m_lastMoveDirection = MoveDirection.Side;
+            }
+
+            if (m_handledByCombatSystem) return;
+            if (m_inEatAnimation) return;
+
+            if (vector == Vector2.zero) HandleStop();
+            else HandleMovement();
+        }
+
+        void HandleMovement()
+        {
             HandleFlip();
 
-            if (m_handledByCombatSystem) Crossfade();
+            if (m_isChewing && !p_lastMovedUp)
+            {
+                m_animator.CrossFade(s_chew_walk_hash, 0f, 0);
+                return;
+            }
 
-            m_previousMovement = m_currentMovement;
+            if (p_lastMovedUp) m_animator.CrossFade(s_walk_up_hash, 0f, 0);
+            else m_animator.CrossFade(s_walk_side_hash, 0f, 0);
+        }
+
+        void HandleStop()
+        {
+            if (m_isChewing && !p_lastMovedUp)
+            {
+                m_animator.CrossFade(s_chew_hash, 0f, 0);
+                return;
+            }
+
+            if (p_lastMovedUp) m_animator.CrossFade(s_idle_up_hash, 0f, 0);
+            else m_animator.CrossFade(s_idle_side_hash, 0f, 0);
+        }
+
+        void HandleFlip()
+        {
+            if (m_lastMovementInput.x > 0f && !m_isFacingRight) Flip();
+            else if (m_lastMovementInput.x < 0f && m_isFacingRight) Flip();
+        }
+
+        void Flip()
+        {
+            m_isFacingRight = !m_isFacingRight;
+            m_renderer.flipX = !m_renderer.flipX;
         }
 
         public void CommitCombatAnimation(int hash)
@@ -98,153 +152,38 @@ namespace com.game.player
             m_animator.CrossFade(hash, 0f, 0);
         }
 
+        public void NotifyEatAnimationEnded()
+        {
+            m_inEatAnimation = false;
+            PlayerEventChannel.CommitEatAnimationEnd();
+
+            if (m_handledByCombatSystem) return;
+
+            if (m_isChewing && !p_lastMovedUp)
+            {
+                if (p_isMoving) m_animator.CrossFade(s_chew_walk_hash, 0f, 0);
+                else m_animator.CrossFade(s_chew_hash, 0f, 0);
+
+                return;
+            }
+
+            if (p_lastMovedUp) CrossfadeUp();
+            else CrossfadeSide();
+        }
+
         public void NotifyCombatAnimationEnded()
         {
             m_handledByCombatSystem = false;
-        }
-
-        void Cleanup()
-        {
-            if (InputManager.Instance == null) return;
-            if (m_handledByCombatSystem) return;
-
-            PlayerInputActions inputActions = InputManager.Instance.InputActions;
-            Vector2 currentMovementVector = inputActions.Player.Move.ReadValue<Vector2>();
-
-            if(currentMovementVector.Equals(Vector2.zero))
+            if(!m_isChewing)
             {
-                HandleStop();
-            }
-        }
+                if (p_lastMovedUp) CrossfadeUp();
+                else CrossfadeSide();
 
-        void CacheVariables()
-        {
-            if (InputManager.Instance.IsKeyboardAndMouse) m_inputLogic = InputLogic.KeyboardAndMouse;
-            else if (InputManager.Instance.IsGamepad) m_inputLogic = InputLogic.Gamepad;
-        }
-
-        void Crossfade()
-        {
-            int targetHash = s_hashes[m_moveState + m_directionState];
-            m_animator.CrossFade(targetHash, 0f, 0);
-        }
-
-        void SetMoveState()
-        {
-            if (m_currentMovement == Vector2.zero)
-            {
-                m_moveState = k_idle;
-
-                SetupTweenForIdle();
+                return;
             }
 
-            else
-            {
-                m_moveState = k_walk;
-
-                SetupTweenForWalk();
-            }
-        }
-
-        void SetupTweenForWalk()
-        {
-            if (m_tweener != null) m_tweener.Kill();
-            if (!m_squeesh) return;
-        }
-
-        void SetupTweenForIdle()
-        {
-            if (m_tweener != null) m_tweener.Kill();
-            if (!m_squeesh) return;
-
-            m_tweener = m_renderer.transform
-            .DOScaleY((m_squeeshAmplitude + 1) * m_renderer.transform.localScale.y, (1 / m_squeeshSpeed))
-            .SetEase(m_squeeshEase)
-            .SetLoops(-1, LoopType.Yoyo)
-            .OnKill(() => m_tweener = null);
-        }
-
-        void SetDirectionState()
-        {
-            if (m_inputLogic == InputLogic.KeyboardAndMouse) SetDirectionState_Keyboard();
-            else if (m_inputLogic == InputLogic.Gamepad) SetDirectionState_Gamepad();
-
-            return;
-
-            void SetDirectionState_Keyboard()
-            {
-                if (m_currentMovement.y > 0f && m_previousMovement.y == 0f) m_directionState = k_up_suffix;
-                else if (m_currentMovement.y < 0f && m_previousMovement.y == 0f) m_directionState = k_down_suffix;
-                else if (m_currentMovement.y == 0f && m_currentMovement.x != 0f) m_directionState = k_side_suffix;
-
-                if (m_currentMovement.x != 0f && m_previousMovement.x == 0f) m_directionState = k_side_suffix;
-                else if (m_currentMovement.x == 0f && m_currentMovement.y > 0f) m_directionState = k_up_suffix;
-                else if (m_currentMovement.x == 0f && m_currentMovement.y < 0f) m_directionState = k_down_suffix;
-            }
-
-            void SetDirectionState_Gamepad()
-            {
-                if (m_currentMovement.Equals(Vector2.zero)) return;
-
-                float angle = Vector2.SignedAngle(Vector2.right, m_currentMovement);
-
-                // right
-                if (angle > -45f && angle < 45f)
-                {
-                    m_directionState = k_side_suffix;
-                    m_rasterizedGamepadDirection = Vector2.right;
-                }
-                // up
-                else if (angle >= 45f && angle <= 135f)
-                {
-                    m_directionState = k_up_suffix;
-                    m_rasterizedGamepadDirection = Vector2.up;
-                }
-                // down
-                else if (angle <= -45f && angle >= -135f)
-                {
-                    m_directionState = k_down_suffix;
-                    m_rasterizedGamepadDirection = Vector2.down;
-                }
-                // left
-                else
-                {
-                    m_directionState = k_side_suffix;
-                    m_rasterizedGamepadDirection = Vector2.left;
-                }
-            }
-        }
-
-        void HandleFlip()
-        {
-            if (m_inputLogic == InputLogic.KeyboardAndMouse) HandleFlip_Keyboard();
-            else if (m_inputLogic == InputLogic.Gamepad) HandleFlip_Gamepad();
-
-            return;
-
-            void HandleFlip_Keyboard()
-            {
-                if (m_currentMovement.x > 0f && !m_facingRight) Flip();
-                else if (m_currentMovement.x < 0f && m_facingRight) Flip();
-            }
-
-            void HandleFlip_Gamepad()
-            {
-                if (m_rasterizedGamepadDirection.Equals(Vector2.right) && !m_facingRight) Flip();
-                else if (m_rasterizedGamepadDirection.Equals(Vector2.left) && m_facingRight) Flip();
-            }
-        }
-
-        void HandleStop()
-        {
-            m_moveState = k_idle;
-            Crossfade();
-        }
-
-        void Flip()
-        {
-            m_renderer.flipX = !m_renderer.flipX;
-            m_facingRight = !m_facingRight;
+            if (p_lastMovedUp) return;
+            m_animator.CrossFade(s_chew_hash, 0f, 0);
         }
     }
 }

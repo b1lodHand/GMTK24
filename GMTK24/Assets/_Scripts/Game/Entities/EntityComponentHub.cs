@@ -1,4 +1,3 @@
-using com.game.scaling.generics;
 using UnityEngine;
 
 namespace com.game.entities
@@ -7,10 +6,10 @@ namespace com.game.entities
     {
         [SerializeField] private Rigidbody2D m_rigidbody;
         [SerializeField] private EntityStats m_stats;
-        [SerializeField] private EntityScaler m_scaler;
+        [SerializeField] private EntityEatingSystem m_eatingSystem;
 
         public Rigidbody2D Rigidbody => m_rigidbody;
         public EntityStats Stats => m_stats;
-        public EntityScaler Scaler => m_scaler;
+        public EntityEatingSystem EatingSystem => m_eatingSystem;
     }
 }

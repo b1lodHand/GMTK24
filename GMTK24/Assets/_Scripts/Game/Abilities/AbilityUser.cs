@@ -38,8 +38,10 @@ namespace com.game.abilities
             ResetCombos();
         }
 
-        public bool UseAbility(Ability ability, bool ignoreCombos = false)
+        public bool UseAbility(Ability ability, bool ignoreCombos, out Ability usedAbility)
         {
+            usedAbility = null;
+
             if (m_activeAbility != null) return false;
             if (ability == null) return false;
 
@@ -56,6 +58,8 @@ namespace com.game.abilities
             {
                 ResetCombos();
                 Cast();
+
+                usedAbility = targetAbility;
                 return true;
             }
 
@@ -87,6 +91,8 @@ namespace com.game.abilities
             }
 
             Cast();
+
+            usedAbility = targetAbility;
             return true;
 
             void Cast()
@@ -100,8 +106,10 @@ namespace com.game.abilities
                 targetAbility.Use(data);
             }
         }
-        public bool UseCombo(Combo combo)
+        public bool UseCombo(Combo combo, out Ability usedAbility)
         {
+            usedAbility = null;
+
             if (combo == null) return false;
             if (!m_combos.Any(entry => entry.Combo.Equals(combo))) return false;
 
@@ -111,7 +119,7 @@ namespace com.game.abilities
                 m_activeCombo = combo;
             }
 
-            return UseAbility(m_activeCombo.GetAbilityAt(m_comboIndex));
+            return UseAbility(m_activeCombo.GetAbilityAt(m_comboIndex), false, out usedAbility);
         }
         public void ForceEndActiveAbility()
         {

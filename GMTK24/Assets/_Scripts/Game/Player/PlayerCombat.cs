@@ -1,4 +1,5 @@
 using com.absence.timersystem;
+using com.game.abilities;
 using com.game.input;
 using com.game.player;
 using UnityEngine;
@@ -14,21 +15,32 @@ namespace com.game
 
         Timer m_cooldownTimer;
 
-        public bool CanPerform => (!Player.Instance.InDialogue) && (!InputManager.Instance.InUI) && (!InputManager.Instance.InRebindProcess);
+        public bool CanPerform => (!IsAttacking) && 
+            (!Player.Instance.IsEating) && 
+            (!Player.Instance.InDialogue) && 
+            (!InputManager.Instance.InUI) && 
+            (!InputManager.Instance.InRebindProcess);
+
+        bool m_isAttacking = false;
+        public bool IsAttacking => m_isAttacking;
 
         private void Start()
         {
             InputEventChannel.Player.OnAttackInput += Attack;
         }
 
-        public void Attack()    
+        public void Attack()
         {
             if (!CanPerform) return;
             if (m_cooldownTimer != null) return;
 
-            bool usedCombo = Player.Instance.Hub.Abilities.UseCombo(m_defaultCombo);
-
+            bool usedCombo = Player.Instance.Hub.Abilities.UseCombo(m_defaultCombo, out Ability usedAbility);
             if (!usedCombo) return;
+
+            m_isAttacking = true;
+
+            if (usedAbility.IsEnded) m_isAttacking = false;
+            else usedAbility.OnEnd += () => m_isAttacking = false;
 
             SetupCooldownTimer();
         }

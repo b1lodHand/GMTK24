@@ -8,6 +8,9 @@ namespace com.game.abilities
     {
         public virtual bool IsAsync => false;
 
+        bool m_isEnded = false;
+        public bool IsEnded => m_isEnded;
+
         public event Action OnStart;
         public event Action OnEnd;
 
@@ -19,14 +22,16 @@ namespace com.game.abilities
 
         public virtual void StartAbility()
         {
-            if (!IsClone) throw new Exception("non-clone ability userd runtime!");
+            if (!IsClone) throw new Exception("non-clone ability used runtime!");
 
+            m_isEnded = false;
             OnStart?.Invoke();
         }
         public virtual void EndAbility()
         {
-            if (!IsClone) throw new Exception("non-clone ability userd runtime!");
+            if (!IsClone) throw new Exception("non-clone ability used runtime!");
 
+            m_isEnded = true;
             OnEnd?.Invoke();
         }
 

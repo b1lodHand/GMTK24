@@ -3,6 +3,7 @@ using com.absence.dialoguesystem;
 using com.absence.personsystem;
 using com.absence.utilities;
 using com.game.input;
+using System;
 using UnityEngine;
 
 namespace com.game.player
@@ -21,7 +22,15 @@ namespace com.game.player
         [SerializeField, Readonly] bool m_inDialogue = false;
         public bool InDialogue => m_inDialogue;
 
+        [SerializeField, Readonly] bool m_isChewing = false;
+        public bool IsChewing => m_isChewing;
+
+        [SerializeField, Readonly] bool m_isEating = false;
+        public bool IsEating => m_isChewing;
+
         DialogueInstance m_occupier = null;
+
+        public bool IsAttacking => Hub.Combat.IsAttacking;
 
         public bool EnterDialogue(DialogueInstance instance)
         {
@@ -39,6 +48,37 @@ namespace com.game.player
             InputManager.Instance.SwitchToPlayerMap();
             m_inDialogue = false;
             m_occupier = null;
+        }
+
+        public void StartEating()
+        {
+            if (m_isChewing) return;
+
+            m_isChewing = true;
+            m_isEating = true;
+            PlayerEventChannel.CommitChewStart();
+        }
+
+        public void StopEating()
+        {
+            m_isEating = false;
+        }
+
+        public void StopChewing()
+        {
+            m_isChewing = false;
+            PlayerEventChannel.CommitChewStop();
+        }
+
+        void NotifyEatAnimationEnd()
+        {
+            StopEating();
+            Hub.Animator.NotifyEatAnimationEnded();
+        }
+
+        void NotifyCombatAnimationEnd()
+        {
+            Hub.Animator.NotifyCombatAnimationEnded();
         }
 
         public void ForceExitDialogue()

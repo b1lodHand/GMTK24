@@ -1,6 +1,7 @@
 using com.absence.attributes;
 using com.game.input;
 using com.game.interactables;
+using com.game.scaling.generics;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace com.game.player
 
         public event Action<Interactable> OnSelectedInteractableChanged;
 
-        public bool CanInteract => (!Player.Instance.InDialogue) && (!InputManager.Instance.InUI) && (!InputManager.Instance.InRebindProcess);
+        public bool CanInteract => (!Player.Instance.IsEating) && (!Player.Instance.InDialogue) && (!InputManager.Instance.InUI) && (!InputManager.Instance.InRebindProcess);
 
         private void Awake()
         {

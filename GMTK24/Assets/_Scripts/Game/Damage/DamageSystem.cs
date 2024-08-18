@@ -21,6 +21,8 @@ namespace com.game.damage
                 return;
             }
 
+            if (context.Receiver == null) return;
+
             context.Receiver.Stats.Health.Value -= context.Value;
         }
     }

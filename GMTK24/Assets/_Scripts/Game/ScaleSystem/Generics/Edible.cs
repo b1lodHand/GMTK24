@@ -5,23 +5,24 @@ namespace com.game.scaling.generics
 {
     public class Edible : Interactable
     {
-        public enum ScaleMode
+        public enum ScalingMode
         {
             ScaleUp = 0,
             ScaleDown = 1,
         }
 
-        [SerializeField] private ScaleMode m_scaleMode = ScaleMode.ScaleUp;
-        [SerializeField] private float m_mass = 1f;
+        [SerializeField] private ScalingMode m_scaleMode = ScalingMode.ScaleUp;
+        [SerializeField] [Min(0f)] private float m_mass = 1f;
+
+        public ScalingMode ScaleMode => m_scaleMode;
+        public float Mass => m_mass;
 
         public override string CustomInteractionMessageForPlayer => "Eat";
 
         protected override void Interact_Internal(InteractorData sender)
-        {
-            if (m_scaleMode == ScaleMode.ScaleUp) sender.Entity.Hub.Scaler.ScaleUp(m_mass);
-            else if (m_scaleMode == ScaleMode.ScaleDown) sender.Entity.Hub.Scaler.ScaleDown(m_mass);
-
-            Destroy(gameObject);
+        {    
+            bool success = sender.Entity.Hub.EatingSystem.Eat(this);
+            if (success) Destroy(gameObject);
         }
     }
 }

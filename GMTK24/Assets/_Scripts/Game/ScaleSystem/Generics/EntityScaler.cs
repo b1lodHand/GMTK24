@@ -1,5 +1,4 @@
 using com.absence.attributes;
-using com.game.entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

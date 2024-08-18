@@ -2,3 +2,7 @@ breakables
 portals
 cracks
 boss
+
+ranged ai
+fast melee ai
+heavy melee ai
