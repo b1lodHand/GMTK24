@@ -1,0 +1,4 @@
+breakables
+portals
+cracks
+boss

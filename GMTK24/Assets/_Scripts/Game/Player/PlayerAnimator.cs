@@ -63,6 +63,7 @@ namespace com.game.player
         string m_directionState = k_side_suffix;
 
         bool m_facingRight = true;
+        bool m_handledByCombatSystem = false;
         InputLogic m_inputLogic = InputLogic.KeyboardAndMouse;
 
         private void Awake()
@@ -85,14 +86,27 @@ namespace com.game.player
             SetMoveState();
             SetDirectionState();
             HandleFlip();
-            Crossfade();
+
+            if (m_handledByCombatSystem) Crossfade();
 
             m_previousMovement = m_currentMovement;
+        }
+
+        public void CommitCombatAnimation(int hash)
+        {
+            m_handledByCombatSystem = true;
+            m_animator.CrossFade(hash, 0f, 0);
+        }
+
+        public void NotifyCombatAnimationEnded()
+        {
+            m_handledByCombatSystem = false;
         }
 
         void Cleanup()
         {
             if (InputManager.Instance == null) return;
+            if (m_handledByCombatSystem) return;
 
             PlayerInputActions inputActions = InputManager.Instance.InputActions;
             Vector2 currentMovementVector = inputActions.Player.Move.ReadValue<Vector2>();

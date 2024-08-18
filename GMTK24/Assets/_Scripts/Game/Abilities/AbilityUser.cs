@@ -113,6 +113,12 @@ namespace com.game.abilities
 
             return UseAbility(m_activeCombo.GetAbilityAt(m_comboIndex));
         }
+        public void ForceEndActiveAbility()
+        {
+            if (m_activeAbility == null) return;
+
+            m_activeAbility.EndAbility();
+        }
 
         AbilityUserData GenerateUserData()
         {

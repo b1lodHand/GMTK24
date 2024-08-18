@@ -10,17 +10,20 @@ namespace com.game
         [SerializeField] private bool m_debugMode = false;
         [SerializeField] private Combo m_defaultCombo;
 
-        [SerializeField] private float m_attackCooldown = 0.2f;
+        [SerializeField] [Min(0f)] private float m_attackCooldown = 0.2f;
 
         Timer m_cooldownTimer;
+
+        public bool CanPerform => (!Player.Instance.InDialogue) && (!InputManager.Instance.InUI) && (!InputManager.Instance.InRebindProcess);
 
         private void Start()
         {
             InputEventChannel.Player.OnAttackInput += Attack;
         }
 
-        public void Attack()
+        public void Attack()    
         {
+            if (!CanPerform) return;
             if (m_cooldownTimer != null) return;
 
             bool usedCombo = Player.Instance.Hub.Abilities.UseCombo(m_defaultCombo);

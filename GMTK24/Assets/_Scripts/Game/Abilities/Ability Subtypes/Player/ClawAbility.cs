@@ -1,3 +1,4 @@
+using com.game.damage;
 using UnityEngine;
 
 namespace com.game.abilities.subtypes.player
@@ -23,7 +24,15 @@ namespace com.game.abilities.subtypes.player
         public override void Use(AbilityUserData user)
         {
             StartAbility();
-            Debug.Log($"{m_clawSide} claw!");
+            DamageContext context = new()
+            {
+                Sender = user.Entity,
+                Receiver = null,
+                Value = 10f,
+                Tier = DamageContext.DamageTier.Normal,
+            };
+
+            DamageSystem.Instance.DealDamage(context);
             EndAbility();
         }
     }

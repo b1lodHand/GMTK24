@@ -157,7 +157,7 @@ namespace com.game.input
             m_currentSchemeName = m_playerInput.defaultControlScheme;
 
             m_playerInput.onControlsChanged += OnControlsChanged;
-            OnControlsChanged(m_playerInput);
+            //OnControlsChanged(m_playerInput);
         }
         private void OnControlsChanged(PlayerInput input)
         {

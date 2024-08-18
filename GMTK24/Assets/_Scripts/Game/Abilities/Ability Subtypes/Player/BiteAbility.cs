@@ -1,3 +1,4 @@
+using com.game.damage;
 using UnityEngine;
 
 namespace com.game.abilities.subtypes
@@ -15,7 +16,15 @@ namespace com.game.abilities.subtypes
         public override void Use(AbilityUserData user)
         {
             StartAbility();
-            Debug.Log("Bite!");
+            DamageContext context = new()
+            {
+                Sender = user.Entity,
+                Receiver = null,
+                Value = 100f,
+                Tier = DamageContext.DamageTier.Critical,
+            };
+
+            DamageSystem.Instance.DealDamage(context);
             EndAbility();
         }
     }

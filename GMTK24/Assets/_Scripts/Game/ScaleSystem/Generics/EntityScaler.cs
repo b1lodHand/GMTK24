@@ -1,4 +1,8 @@
 using com.absence.attributes;
+using com.game.entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace com.game.scaling.generics
@@ -7,20 +11,31 @@ namespace com.game.scaling.generics
     {
         [SerializeField] private bool m_debugMode = false;
 
-        [SerializeField] private Rigidbody2D m_rigidbody;
-        [SerializeField] private Transform m_body;
-        [SerializeField] private Transform m_collision;
-
-        [SerializeField] private float m_bodyScaleFactor = 1f;
-        [SerializeField] private float m_massDeltaFactor = 1f;
-        [SerializeField, Readonly] private float m_totalScaleDifference = 0f;
+        [Header("Initial Fields")]
         [SerializeField] private Vector2 m_scaleBounds = new Vector2(-100f, 100f);
 
-        Vector2 m_bodyCollisionRatio;
+        [Header("Real Mass")]
+
+        [SerializeField] private bool m_useRealMass = true;
+        [SerializeField, ShowIf(nameof(m_useRealMass))] private Rigidbody2D m_rb;
+        [SerializeField, ShowIf(nameof(m_useRealMass)), Min(0.001f)] private float m_rigidbodyMassFactor = 1f;
+
+        [Space(10)]
+
+        [Header("Additional Settings")]
+
+        [SerializeField] private List<TransformEntry> m_scaleableObjects = new();
+
+        [Header("Runtime")]
+
+        [SerializeField, Readonly] private float m_totalScaleDifference = 0f;
+
+        public event Action<float> OnScaleDifference = null;
 
         private void Start()
         {
-            CacheRatio();
+            CacheVariables();
+            m_scaleableObjects.ForEach(obj => obj.Initialize());
         }
 
         public bool ScaleUp(float massGain)
@@ -28,10 +43,10 @@ namespace com.game.scaling.generics
             float newScale = m_totalScaleDifference + massGain;
             if (newScale > m_scaleBounds.y) return false;
 
-            Calculate(massGain, out float newMass, out Vector2 newBodySize, out Vector2 newCollisionSize);
-            ApplyFields(newMass, newBodySize, newCollisionSize);
+            Apply(massGain);
             m_totalScaleDifference = newScale;
 
+            OnScaleDifference?.Invoke(massGain);
             return true;
         }
 
@@ -40,46 +55,36 @@ namespace com.game.scaling.generics
             float newScale = m_totalScaleDifference - massLoss;
             if (newScale < m_scaleBounds.x) return false;
 
-            Calculate(-massLoss, out float newMass, out Vector2 newBodySize, out Vector2 newCollisionSize);
-            ApplyFields(newMass, newBodySize, newCollisionSize);
+            Apply(-massLoss);
             m_totalScaleDifference = newScale;
 
+            OnScaleDifference?.Invoke(-massLoss);
             return true;
         }
 
-        void ApplyFields(float newMass, Vector2 newBodySize, Vector2 newCollisionSize)
+        void CacheVariables()
         {
-            m_rigidbody.mass = newMass;
-
-            m_body.localScale = newBodySize;
-            //m_body.ScaleAround(m_body.position, newBodySize);
-
-            m_collision.localScale = newCollisionSize;
-            //m_collision.ScaleAround(m_collision.position, newCollisionSize);
         }
 
-        void Calculate(float massDifference, out float newMass, out Vector2 newBodySize, out Vector2 newCollisionSize)
+        void Apply(float scaleDifference)
         {
-            float mass = m_rigidbody.mass;
-            newMass = mass + (massDifference * m_massDeltaFactor);
-
-            Vector2 bodySize = m_body.transform.localScale;
-            float bodySizeDiff = massDifference * m_bodyScaleFactor;
-            float bodySizeRatio = bodySize.y / bodySize.x;
-
-            bodySize.x += bodySizeDiff;
-            bodySize.y += bodySizeDiff * bodySizeRatio;
-
-            newBodySize = bodySize;
-
-            newCollisionSize = newBodySize  / m_bodyCollisionRatio;
+            ApplyRealMass(scaleDifference);
+            RefreshAll(scaleDifference);
         }
 
-        void CacheRatio()
+        void ApplyRealMass(float scaleDifference)
         {
-            float x = m_body.localScale.x / m_collision.localScale.x;
-            float y = m_body.localScale.y / m_collision.localScale.y;
-            m_bodyCollisionRatio = new(x, y);
+            if (m_rb == null) return;
+
+            float mass = m_rb.mass;
+            mass += scaleDifference * m_rigidbodyMassFactor;
+
+            m_rb.mass = mass;
+        }
+        void RefreshAll(float scaleDifference)
+        {
+            List<TransformEntry> temp = m_scaleableObjects.OrderBy(entry => (int)entry.ScaleType).ToList();
+            temp.ForEach(entry => entry.Refresh(scaleDifference));
         }
 
         private void OnGUI()
@@ -94,6 +99,83 @@ namespace com.game.scaling.generics
             if (GUILayout.Button("Lose Mass"))
             {
                 ScaleDown(1f);
+            }
+        }
+
+        [System.Serializable]
+        public class TransformEntry
+        {
+            public enum ScalingType
+            {
+                Individual = 0,
+                Ratio = 1,
+            }
+
+            [SerializeField] private Transform m_transform = null;
+            [SerializeField] private ScalingType m_scaleType = ScalingType.Individual;
+            
+            [SerializeField, ShowIf(nameof(m_scaleType), ScalingType.Individual), Min(0.001f)] 
+            private float m_scaleFactor = 1f;
+
+            [SerializeField, ShowIf(nameof(m_scaleType), ScalingType.Ratio)]
+            private Transform m_targetForRatio = null;
+
+            Vector2 m_ratio = Vector2.one;
+
+            public ScalingType ScaleType => m_scaleType;
+
+            public void Initialize()
+            {
+                switch (m_scaleType)
+                {
+                    case ScalingType.Individual:
+                        break;
+
+                    case ScalingType.Ratio:
+                        m_ratio = CalculateRatio();
+                        break;
+
+                    default:
+                        throw new System.Exception("something went wrong on an entity scaler.");
+                }
+            }
+            public void Refresh(float scaleDifference)
+            {
+                switch (m_scaleType)
+                {
+                    case ScalingType.Individual:
+                        RefreshIndividually(scaleDifference);
+                        break;
+
+                    case ScalingType.Ratio:
+                        RefreshByRatio();
+                        break;
+
+                    default:
+                        throw new Exception("something went wrong on an entity scaler.");
+                }
+            }
+
+            void RefreshIndividually(float scaleDifference)
+            {
+                Vector2 scale = m_transform.localScale;
+                float initialRatio = scale.y / scale.x;
+                float step = scaleDifference * m_scaleFactor;
+
+                scale.x += step;
+                scale.y += step * initialRatio;
+
+                m_transform.localScale = scale;
+            }
+            void RefreshByRatio()
+            {
+                m_transform.localScale = m_targetForRatio.localScale * m_ratio;
+            }
+            Vector2 CalculateRatio()
+            {
+                float x = m_transform.localScale.x / m_targetForRatio.localScale.x;
+                float y = m_transform.localScale.y / m_targetForRatio.localScale.y;
+                return new Vector2(x, y);
             }
         }
     }
