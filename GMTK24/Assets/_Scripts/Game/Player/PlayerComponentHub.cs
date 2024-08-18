@@ -1,9 +1,7 @@
-using com.game.abilities;
-using com.game.player;
-using com.game.scaling.generics;
+using com.game.entities;
 using UnityEngine;
 
-namespace com.game
+namespace com.game.player
 {
     public class PlayerComponentHub : MonoBehaviour
     {
@@ -13,8 +11,8 @@ namespace com.game
         [SerializeField] private PlayerAnimator m_animator;
         [SerializeField] private PlayerCombat m_combat;
         [SerializeField] private PlayerUIEventsHandler m_uiEventsHandler;
-        [SerializeField] private EntityScaler m_scaler;
         [SerializeField] private PlayerAbilities m_abilities;
+        [SerializeField] private Entity m_entity;
 
         public PlayerInputHandler InputHandler => m_inputHandler;
         public PlayerInteractor Interactor => m_interactor;
@@ -22,7 +20,7 @@ namespace com.game
         public PlayerAnimator Animator => m_animator;
         public PlayerCombat Combat => m_combat;
         public PlayerUIEventsHandler UIEventsHandler => m_uiEventsHandler;
-        public EntityScaler Scaler => m_scaler;
+        public Entity Entity => m_entity;
         public PlayerAbilities Abilities => m_abilities;
     }
 }

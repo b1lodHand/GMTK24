@@ -1,23 +1,24 @@
 using com.absence.personsystem;
+using com.game.entities;
 using com.game.player;
-using UnityEngine;
 
 namespace com.game.abilities
 {
     [System.Serializable]
     public class AbilityUserData
     {
-        [field: SerializeField] public Person Person { get; set; }
-
-        public AbilityUserData() 
-        { 
-            Person = null;
-        }
+        public Entity Entity;
 
         public bool IsPlayer()
         {
-            if (Person == null) return false;
-            return Person.Equals(Player.Instance.Person);
+            if (Entity == null) return false;
+
+            Person person = Entity.Person;
+
+            if (person == null) return false;
+            if (person != Player.Instance.Person) return false;
+
+            return true;
         }
     }
 }

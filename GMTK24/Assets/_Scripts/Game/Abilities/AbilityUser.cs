@@ -1,5 +1,6 @@
 using com.absence.attributes;
 using com.absence.timersystem;
+using com.game.entities;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,8 +11,7 @@ namespace com.game.abilities
     {
         [Header("Initial Fields")]
 
-        [SerializeField] private bool m_dataSetExternally = false;
-        [SerializeField, HideIf(nameof(m_dataSetExternally))] private AbilityUserData m_data = new();
+        [SerializeField] private Entity m_entityScript;
 
         [Header("Database")]
 
@@ -36,8 +36,6 @@ namespace com.game.abilities
             m_combos.ForEach(entry => entry.Initialize());
 
             ResetCombos();
-
-            if (!m_dataSetExternally) m_data = new();
         }
 
         public bool UseAbility(Ability ability, bool ignoreCombos = false)
@@ -49,8 +47,10 @@ namespace com.game.abilities
             if (targetEntry == null) return false;
             if (!targetEntry.IsUnlocked) return false;
 
+            AbilityUserData data = GenerateUserData();
+
             Ability targetAbility = targetEntry.GetUsableAbility();
-            if (!targetAbility.CanUse(m_data)) return false;
+            if (!targetAbility.CanUse(data)) return false;
 
             if(ignoreCombos)
             {
@@ -97,7 +97,7 @@ namespace com.game.abilities
                 };
 
                 m_activeAbility = targetAbility;
-                targetAbility.Use(m_data);
+                targetAbility.Use(data);
             }
         }
         public bool UseCombo(Combo combo)
@@ -114,12 +114,12 @@ namespace com.game.abilities
             return UseAbility(m_activeCombo.GetAbilityAt(m_comboIndex));
         }
 
-        public bool SetData(AbilityUserData data)
+        AbilityUserData GenerateUserData()
         {
-            if(!m_dataSetExternally) return false;
+            AbilityUserData data = new();
+            if (m_entityScript != null) data.Entity = m_entityScript;
 
-            m_data = data;
-            return true;
+            return data;
         }
 
         void StartComboTimer()

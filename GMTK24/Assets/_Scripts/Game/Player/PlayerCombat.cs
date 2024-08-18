@@ -23,7 +23,7 @@ namespace com.game
         {
             if (m_cooldownTimer != null) return;
 
-            bool usedCombo = Player.Instance.Hub.Abilities.User.UseCombo(m_defaultCombo);
+            bool usedCombo = Player.Instance.Hub.Abilities.UseCombo(m_defaultCombo);
 
             if (!usedCombo) return;
 

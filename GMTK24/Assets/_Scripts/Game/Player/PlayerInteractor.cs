@@ -125,8 +125,7 @@ namespace com.game.player
         InteractorData GeneratePlayerInteractorData()
         {
             InteractorData data = new();
-            data.Person = Player.Instance.Person;
-            data.Scaler = Player.Instance.Hub.Scaler;
+            data.Entity = Player.Instance.Hub.Entity;
 
             return data;
         }

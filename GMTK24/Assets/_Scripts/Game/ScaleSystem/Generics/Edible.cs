@@ -18,8 +18,8 @@ namespace com.game.scaling.generics
 
         protected override void Interact_Internal(InteractorData sender)
         {
-            if (m_scaleMode == ScaleMode.ScaleUp) sender.Scaler.ScaleUp(m_mass);
-            else if (m_scaleMode == ScaleMode.ScaleDown) sender.Scaler.ScaleDown(m_mass);
+            if (m_scaleMode == ScaleMode.ScaleUp) sender.Entity.Hub.Scaler.ScaleUp(m_mass);
+            else if (m_scaleMode == ScaleMode.ScaleDown) sender.Entity.Hub.Scaler.ScaleDown(m_mass);
 
             Destroy(gameObject);
         }

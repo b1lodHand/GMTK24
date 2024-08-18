@@ -12,8 +12,7 @@ namespace com.game.player
         [SerializeField] private PlayerComponentHub m_componentHub;
         public PlayerComponentHub Hub => m_componentHub;
 
-        [SerializeField] private Person m_person;   
-        public Person Person => m_person;
+        public Person Person => Hub.Entity.Person;
 
         [SerializeField, Readonly] bool m_inDialogue = false;
         public bool InDialogue => m_inDialogue;

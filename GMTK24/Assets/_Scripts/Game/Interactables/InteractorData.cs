@@ -1,18 +1,21 @@
 using com.absence.personsystem;
-using com.game.scaling.generics;
+using com.game.entities;
 
 namespace com.game.interactables
 {
     [System.Serializable]
     public class InteractorData
     {
-        public Person Person;
-        public EntityScaler Scaler; 
+        public Entity Entity;
 
         public bool IsPlayer()
         {
-            if (Person == null) return false;
-            if (Person != player.Player.Instance.Person) return false;
+            if (Entity == null) return false;
+
+            Person person = Entity.Person;
+
+            if (person == null) return false;
+            if (person != player.Player.Instance.Person) return false;
 
             return true;
         }
