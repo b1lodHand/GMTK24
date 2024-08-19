@@ -1,21 +1,20 @@
-using com.absence.attributes;
+using Cinemachine;
 using com.game.cameras.shaking;
 using UnityEngine;
 
-namespace com.game
+namespace com.game.player
 {
-    [RequireComponent(typeof(Camera))]
     public class PlayerCamera : MonoBehaviour
     {
-        [SerializeField, Readonly] private Camera m_camera;
         [SerializeField] private CameraShaker m_shaker;
 
         public void Shake(ShakeProperties properties) => m_shaker.Shake(properties);
         public void Shake() => m_shaker.Shake();
 
-        private void Reset()
+        public void SetupWith(CinemachineVirtualCamera vm)
         {
-            m_camera = GetComponent<Camera>();
+            vm.Follow = Player.Instance.Body;
+            m_shaker.FetchPerlin(vm);
         }
     }
 }

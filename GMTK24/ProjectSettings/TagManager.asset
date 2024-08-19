@@ -15,8 +15,8 @@ TagManager:
   - Interactable
   - Entity/Creature
   - Entity/Prop
-  - 
-  - 
+  - Wall/Global
+  - Wall/IgnoreCamera
   - 
   - 
   - 

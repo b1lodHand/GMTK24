@@ -15,6 +15,7 @@ namespace com.game.entities
 
         [SerializeField] protected EntityType m_type = EntityType.Creature;
         [SerializeField] protected Person m_person;
+        [SerializeField] protected Transform m_body;
         [SerializeField] protected EntityComponentHub m_componentHub;
 
         public event Action OnDeath;
@@ -22,6 +23,7 @@ namespace com.game.entities
 
         public EntityType Type => m_type;
         public Person Person => m_person;
+        public Transform Body => m_body;
         public EntityComponentHub Hub => m_componentHub;
         public EntityStats Stats => Hub.Stats;
 

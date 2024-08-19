@@ -187,7 +187,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3660443746171243804
 RectTransform:
   m_ObjectHideFlags: 0
@@ -557,6 +557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_keepStartingOffset: 0
+  m_defaultOffset: {x: 0, y: 0, z: 0}
   m_target: {fileID: 7974760002513153209}
 --- !u!1 &7219597816132551615
 GameObject:
@@ -571,6 +572,7 @@ GameObject:
   - component: {fileID: 5449932414746644917}
   - component: {fileID: 7093296583806312309}
   - component: {fileID: 1202600614706139630}
+  - component: {fileID: 4398801520265258453}
   m_Layer: 0
   m_Name: PlayerCamera
   m_TagString: MainCamera
@@ -587,7 +589,7 @@ Transform:
   m_GameObject: {fileID: 7219597816132551615}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: -9.58, y: 0.46, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -605,7 +607,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afe99744b00fac14faf78eadb70f3b87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_camera: {fileID: 7093296583806312309}
   m_shaker: {fileID: 5449932414746644917}
 --- !u!114 &5449932414746644917
 MonoBehaviour:
@@ -619,12 +620,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b760760aafc692d4dbb8139b24669cbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_camera: {fileID: 7093296583806312309}
+  m_mildProfile: {fileID: 11400000, guid: 822f974d016a11444a72e44554a0b640, type: 2}
+  m_strongProfile: {fileID: 11400000, guid: b2c9bb00d2b6ea34c8b02524360b7392, type: 2}
+  m_extremeProfile: {fileID: 11400000, guid: 4dda358771198804caad63c441d96393, type: 2}
   m_defaultShakeProperties:
+    <Profile>k__BackingField: 0
     <Duration>k__BackingField: 0.2
     <Amplitude>k__BackingField: 0.3
-    <Vibrato>k__BackingField: 100
-    <Randomness>k__BackingField: 90
+    <Frequency>k__BackingField: 200
     <FadeOut>k__BackingField: 1
 --- !u!20 &7093296583806312309
 Camera:
@@ -661,7 +664,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -685,6 +688,40 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7219597816132551615}
   m_Enabled: 1
+--- !u!114 &4398801520265258453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7219597816132551615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShowDebugText: 0
+  m_ShowCameraFrustum: 1
+  m_IgnoreTimeScale: 0
+  m_WorldUpOverride: {fileID: 0}
+  m_UpdateMethod: 2
+  m_BlendUpdateMethod: 1
+  m_DefaultBlend:
+    m_Style: 1
+    m_Time: 2
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  m_CustomBlends: {fileID: 0}
+  m_CameraCutEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_CameraActivatedEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &4525353429556229267
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -17,6 +17,7 @@ namespace com.game.player
         public PlayerCamera Camera => m_camera;
 
         public Person Person => Hub.Entity.Person;
+        public Transform Body => Hub.Entity.Body;
         public PlayerStats Stats => Hub.Entity.Hub.Stats as PlayerStats;
 
         [SerializeField, Readonly] bool m_inDialogue = false;

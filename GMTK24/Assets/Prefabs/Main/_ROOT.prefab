@@ -250,34 +250,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_normalDamageShake:
-    <Duration>k__BackingField: 0.2
-    <Amplitude>k__BackingField: 0.3
-    <Vibrato>k__BackingField: 100
-    <Randomness>k__BackingField: 90
+    <Profile>k__BackingField: 0
+    <Duration>k__BackingField: 0
+    <Amplitude>k__BackingField: 0
+    <Frequency>k__BackingField: 0
     <FadeOut>k__BackingField: 1
   m_highDamageShake:
+    <Profile>k__BackingField: 0
     <Duration>k__BackingField: 0.2
-    <Amplitude>k__BackingField: 0.3
-    <Vibrato>k__BackingField: 100
-    <Randomness>k__BackingField: 90
+    <Amplitude>k__BackingField: 0.2
+    <Frequency>k__BackingField: 300
     <FadeOut>k__BackingField: 1
   m_higherDamageShake:
+    <Profile>k__BackingField: 0
     <Duration>k__BackingField: 0.2
     <Amplitude>k__BackingField: 0.3
-    <Vibrato>k__BackingField: 100
-    <Randomness>k__BackingField: 90
+    <Frequency>k__BackingField: 250
     <FadeOut>k__BackingField: 1
   m_superDamageShake:
-    <Duration>k__BackingField: 0.2
+    <Profile>k__BackingField: 1
+    <Duration>k__BackingField: 0.3
     <Amplitude>k__BackingField: 0.3
-    <Vibrato>k__BackingField: 100
-    <Randomness>k__BackingField: 90
+    <Frequency>k__BackingField: 400
     <FadeOut>k__BackingField: 1
   m_criticalDamageShake:
-    <Duration>k__BackingField: 0.2
-    <Amplitude>k__BackingField: 0.3
-    <Vibrato>k__BackingField: 100
-    <Randomness>k__BackingField: 90
+    <Profile>k__BackingField: 2
+    <Duration>k__BackingField: 0.3
+    <Amplitude>k__BackingField: 0.5
+    <Frequency>k__BackingField: 1000
     <FadeOut>k__BackingField: 1
 --- !u!1 &7039525672743293967
 GameObject:
@@ -362,10 +362,6 @@ PrefabInstance:
     - target: {fileID: 1230102306385235891, guid: 4ff08f63953da9c428a20dd2d8390c95, type: 3}
       propertyPath: m_Name
       value: PlayerContainer
-      objectReference: {fileID: 0}
-    - target: {fileID: 3453067953161535343, guid: 4ff08f63953da9c428a20dd2d8390c95, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
