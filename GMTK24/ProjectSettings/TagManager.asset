@@ -17,8 +17,8 @@ TagManager:
   - Entity/Prop
   - Wall/Global
   - Wall/IgnoreCamera
-  - 
-  - 
+  - ParticleCollision
+  - Particle
   - 
   - 
   - 

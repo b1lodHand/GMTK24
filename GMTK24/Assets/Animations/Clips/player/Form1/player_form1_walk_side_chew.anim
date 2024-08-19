@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: player_chew_while_walk
+  m_Name: player_form1_walk_side_chew
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0

@@ -285,6 +285,7 @@ MonoBehaviour:
   m_rigidbody: {fileID: 2271662574608253222}
   m_stats: {fileID: 7946332329376241546}
   m_eatingSystem: {fileID: 5604798713886328473}
+  m_formSystem: {fileID: 5243560701366037125}
 --- !u!1 &6748272631507714373
 GameObject:
   m_ObjectHideFlags: 0
@@ -742,6 +743,7 @@ MonoBehaviour:
   m_componentHub: {fileID: 9222660422493901301}
   m_camera: {fileID: 0}
   m_inDialogue: 0
+  m_inCutscene: 0
   m_isChewing: 0
   m_isEating: 0
 --- !u!114 &8463565448863339246
@@ -819,6 +821,7 @@ GameObject:
   - component: {fileID: 1208593326040728186}
   - component: {fileID: 710266023335086080}
   - component: {fileID: 5604798713886328473}
+  - component: {fileID: 5243560701366037125}
   m_Layer: 0
   m_Name: Eat Logic
   m_TagString: Untagged
@@ -880,6 +883,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f80939168eaaa5946bbb367a634aeb2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_eatingParticles: {fileID: 2028594886108528868, guid: ca15226476ecc044c97c7bdc8b7e4db7, type: 3}
+  m_eatingParticles: {fileID: 1263816544763292501, guid: ca15226476ecc044c97c7bdc8b7e4db7, type: 3}
   m_scaler: {fileID: 710266023335086080}
   m_chewDuration: 1.2
+--- !u!114 &5243560701366037125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8979679698899312346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dca05ea50c48b245981ba3228faccb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_scaler: {fileID: 710266023335086080}
+  m_forms:
+  - m_formAsset: {fileID: 11400000, guid: d3d47199f42763d48bfef7901ed34b88, type: 2}
+    m_scaleBottomline: 0
+  - m_formAsset: {fileID: 11400000, guid: 81e98aedadf90d342ac23dcca4dd24c9, type: 2}
+    m_scaleBottomline: 20
+  m_currentForm: {fileID: 0}

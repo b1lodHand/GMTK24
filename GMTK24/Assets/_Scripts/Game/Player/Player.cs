@@ -3,7 +3,6 @@ using com.absence.dialoguesystem;
 using com.absence.personsystem;
 using com.absence.utilities;
 using com.game.input;
-using System;
 using UnityEngine;
 
 namespace com.game.player
@@ -20,8 +19,12 @@ namespace com.game.player
         public Transform Body => Hub.Entity.Body;
         public PlayerStats Stats => Hub.Entity.Hub.Stats as PlayerStats;
 
+
         [SerializeField, Readonly] bool m_inDialogue = false;
         public bool InDialogue => m_inDialogue;
+
+        [SerializeField, Readonly] bool m_inCutscene = false;
+        public bool InCutscene => m_inCutscene;
 
         [SerializeField, Readonly] bool m_isChewing = false;
         public bool IsChewing => m_isChewing;
@@ -57,7 +60,7 @@ namespace com.game.player
 
             m_isChewing = true;
             m_isEating = true;
-            PlayerEventChannel.CommitChewStart();
+            PlayerEventChannel.Eating.CommitEatStart();
         }
 
         public void StopEating()
@@ -68,7 +71,17 @@ namespace com.game.player
         public void StopChewing()
         {
             m_isChewing = false;
-            PlayerEventChannel.CommitChewStop();
+            PlayerEventChannel.Eating.CommitChewStop();
+        }
+
+        public void EnterCutscene()
+        {
+            m_inCutscene = true;
+        }
+
+        public void EndCutscene()
+        {
+            m_inCutscene = false;
         }
 
         void NotifyEatAnimationEnd()
@@ -76,7 +89,6 @@ namespace com.game.player
             StopEating();
             Hub.Animator.NotifyEatAnimationEnded();
         }
-
         void NotifyCombatAnimationEnd()
         {
             Hub.Animator.NotifyCombatAnimationEnded();

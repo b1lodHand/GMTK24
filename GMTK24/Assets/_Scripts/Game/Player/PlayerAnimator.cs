@@ -1,5 +1,9 @@
 using com.absence.attributes;
+using com.game.entities;
 using com.game.input;
+using System.Collections.Generic;
+using System.Text;
+
 //using DG.Tweening;
 using UnityEngine;
 
@@ -7,19 +11,20 @@ namespace com.game.player
 {
     public class PlayerAnimator : MonoBehaviour
     {
-        public enum MoveDirection
-        {
-            Up = 0,
-            Side = 1,
-        }
+        static readonly int s_hash_eat = Animator.StringToHash("player_eat");
 
-        static readonly int s_idle_side_hash = Animator.StringToHash("player_idle_side");
-        static readonly int s_idle_up_hash = Animator.StringToHash("player_idle_up");
-        static readonly int s_walk_side_hash = Animator.StringToHash("player_walk_side");
-        static readonly int s_walk_up_hash = Animator.StringToHash("player_walk_up");
-        static readonly int s_eat_hash = Animator.StringToHash("player_eat");
-        static readonly int s_chew_hash = Animator.StringToHash("player_chew");
-        static readonly int s_chew_walk_hash = Animator.StringToHash("player_chew_while_walk");
+        static readonly string s_player = "player";
+
+        static readonly string s_idle = "_idle";
+        static readonly string s_walk = "_walk";
+
+        static readonly string s_chew = "_chew";
+
+        static readonly string s_up = "_up";
+        static readonly string s_down = "_down";
+        static readonly string s_side = "_side";
+
+        Dictionary<string, int> m_hashes;
 
         [Header("Initial Fields")]
 
@@ -37,107 +42,137 @@ namespace com.game.player
         [Header("Runtime")]
         [SerializeField, Readonly] bool m_isFacingRight = true;
 
-        MoveDirection m_lastMoveDirection;
         Vector2 m_lastMovementInput;
+        Vector2 m_currentMovementInput;
         bool m_handledByCombatSystem = false;
         bool m_isChewing = false;
         bool m_inEatAnimation = false;
 
-        bool p_isMoving => m_lastMovementInput != Vector2.zero;
-        bool p_isAttacking => Player.Instance.IsAttacking;
-        bool p_lastMovedUp => m_lastMoveDirection == MoveDirection.Up;
+        int m_lastHash;
+
+        string m_state;
+        string m_direction;
+        string m_suffix;
 
         private void Start()
         {
             InputEventChannel.Player.OnMovementInput += OnMove;
-            PlayerEventChannel.OnStartChewing += OnStartChewing;
-            PlayerEventChannel.OnStopChewing += OnStopChewing;
+            PlayerEventChannel.Eating.OnStartEating += OnStartEating;
+            PlayerEventChannel.Eating.OnStopChewing += OnStopChewing;
+            PlayerEventChannel.Eating.OnFormChange += OnFormChange;
 
             m_isFacingRight = true;
-            CrossfadeSide();
+            m_hashes = new();
         }
 
-        void CrossfadeSide()
+        private void LateUpdate()
         {
-            if (p_isMoving) m_animator.CrossFade(s_walk_side_hash, 0f, 0);
-            else m_animator.CrossFade(s_idle_side_hash, 0f, 0);
+            Cleanup();
         }
 
-        void CrossfadeUp()
+        void Cleanup()
         {
-            if (p_isMoving) m_animator.CrossFade(s_walk_up_hash, 0f, 0);
-            else m_animator.CrossFade(s_idle_up_hash, 0f, 0);
+            int hash = GenerateHash();
+            if (hash != m_lastHash && (!m_handledByCombatSystem) && (!m_inEatAnimation)) RefreshAnimations(true);
         }
 
-        private void OnStartChewing()
+        private void OnFormChange(EntityForm form1, EntityForm form2)
         {
-            if (p_isAttacking) return;
+            ChangeController(form2.OverrideController);
+            RefreshAnimations();
+        }
 
+        private void OnStartEating()
+        {
             m_isChewing = true;
             m_inEatAnimation = true;
 
-            m_animator.CrossFade(s_eat_hash, 0f, 0);
+            m_animator.CrossFade(s_hash_eat, 0f, 0);
         }
 
         private void OnStopChewing()
         {
-            if (p_isAttacking) return;
-
             m_isChewing = false;
-
-            if (p_lastMovedUp) CrossfadeUp();
-            else CrossfadeSide();
         }
 
         private void OnMove(Vector2 vector)
         {
             if (m_debugMode) Debug.Log($"move: ({vector.x}, {vector.y})");
 
-            m_lastMovementInput = vector;
+            m_currentMovementInput = vector;
 
-            if (p_isMoving)
-            {
-                if (vector.y > 0f) m_lastMoveDirection = MoveDirection.Up;
-                else m_lastMoveDirection = MoveDirection.Side;
-            }
+            RefreshAnimations(!m_handledByCombatSystem);
+            HandleFlip();
 
-            if (m_handledByCombatSystem) return;
-            if (m_inEatAnimation) return;
-
-            if (vector == Vector2.zero) HandleStop();
-            else HandleMovement();
+            m_lastMovementInput = m_currentMovementInput;
         }
 
         void HandleMovement()
         {
-            HandleFlip();
+            m_state = s_walk;
 
-            if (m_isChewing && !p_lastMovedUp)
+            float currentY = m_currentMovementInput.y;
+            float lastY = m_lastMovementInput.y;
+
+            float currentX = m_currentMovementInput.x;
+            float lastX = m_lastMovementInput.x;
+
+            if (currentY == 0f && lastY != currentY) m_direction = s_side;
+            else if (currentY > lastY && lastY == 0f) m_direction = s_up;
+            else if (currentY < lastY && lastY == 0f) m_direction = s_down;
+
+            if (currentX != lastX && lastX == 0f) m_direction = s_side;
+            else if (currentX == 0f && lastX != currentX)
             {
-                m_animator.CrossFade(s_chew_walk_hash, 0f, 0);
-                return;
+                if (currentY > lastY) m_direction = s_up;
+                else if (currentY < lastY) m_direction = s_down;
             }
-
-            if (p_lastMovedUp) m_animator.CrossFade(s_walk_up_hash, 0f, 0);
-            else m_animator.CrossFade(s_walk_side_hash, 0f, 0);
         }
 
         void HandleStop()
         {
-            if (m_isChewing && !p_lastMovedUp)
+            m_state = s_idle;
+        }
+
+        void CheckChewing()
+        {
+            if (m_isChewing) m_suffix = s_chew;
+            else m_suffix = string.Empty;
+        }
+
+        int GenerateHash()
+        {
+            StringBuilder sb = new(s_player);
+            sb.Append(m_state);
+            sb.Append(m_direction);
+            sb.Append(m_suffix);
+
+            string result = sb.ToString();
+
+            if (!m_hashes.TryGetValue(result, out int hash))
             {
-                m_animator.CrossFade(s_chew_hash, 0f, 0);
-                return;
+                hash = Animator.StringToHash(result);
+                m_hashes.Add(result, hash);
             }
 
-            if (p_lastMovedUp) m_animator.CrossFade(s_idle_up_hash, 0f, 0);
-            else m_animator.CrossFade(s_idle_side_hash, 0f, 0);
+            return hash;
+        }
+
+        void RefreshAnimations(bool fade = true)
+        {
+            if (m_currentMovementInput != Vector2.zero) HandleMovement();
+            else HandleStop();
+
+            CheckChewing();
+
+            m_lastHash = GenerateHash();
+            if (fade) m_animator.CrossFade(m_lastHash, 0f, 0);
         }
 
         void HandleFlip()
         {
-            if (m_lastMovementInput.x > 0f && !m_isFacingRight) Flip();
-            else if (m_lastMovementInput.x < 0f && m_isFacingRight) Flip();
+            if (m_currentMovementInput.x > 0f && !m_isFacingRight) Flip();
+            else if (m_currentMovementInput.x < 0f && m_isFacingRight) Flip();
         }
 
         void Flip()
@@ -155,35 +190,17 @@ namespace com.game.player
         public void NotifyEatAnimationEnded()
         {
             m_inEatAnimation = false;
-            PlayerEventChannel.CommitEatAnimationEnd();
-
-            if (m_handledByCombatSystem) return;
-
-            if (m_isChewing && !p_lastMovedUp)
-            {
-                if (p_isMoving) m_animator.CrossFade(s_chew_walk_hash, 0f, 0);
-                else m_animator.CrossFade(s_chew_hash, 0f, 0);
-
-                return;
-            }
-
-            if (p_lastMovedUp) CrossfadeUp();
-            else CrossfadeSide();
+            PlayerEventChannel.Eating.CommitEatStop();
         }
 
         public void NotifyCombatAnimationEnded()
         {
             m_handledByCombatSystem = false;
-            if(!m_isChewing)
-            {
-                if (p_lastMovedUp) CrossfadeUp();
-                else CrossfadeSide();
+        }
 
-                return;
-            }
-
-            if (p_lastMovedUp) return;
-            m_animator.CrossFade(s_chew_hash, 0f, 0);
+        public void ChangeController(AnimatorOverrideController controller)
+        {
+            m_animator.runtimeAnimatorController = controller;
         }
     }
 }

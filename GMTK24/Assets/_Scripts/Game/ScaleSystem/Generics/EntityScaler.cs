@@ -29,6 +29,8 @@ namespace com.game.scaling.generics
 
         [SerializeField, Readonly] private float m_totalScaleDifference = 0f;
 
+        public float TotalScaleDifference => m_totalScaleDifference;
+
         public event Action<float> OnScaleDifference = null;
 
         private void Start()

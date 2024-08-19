@@ -1,5 +1,4 @@
 using Cinemachine;
-using com.absence.attributes;
 using com.absence.timersystem;
 using System;
 using System.Linq;
@@ -76,7 +75,7 @@ namespace com.game.cameras.shaking
         private void OnTimerComplete(Timer.TimerState state)
         {
             m_timer = null;
-            if (state == Timer.TimerState.Succeeded) CleanPerlin();
+            CleanPerlin();
         }
 
         NoiseSettings GetSettings(ShakeProperties.ShakeProfile profile)

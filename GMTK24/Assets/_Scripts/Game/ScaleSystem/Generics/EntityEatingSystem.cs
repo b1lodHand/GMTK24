@@ -8,6 +8,8 @@ namespace com.game.entities
         [SerializeField] private GameObject m_eatingParticles;
         [SerializeField] private EntityScaler m_scaler;
 
+        public EntityScaler Scaler => m_scaler;
+
         public virtual bool Eat(Edible target)
         {
             if (target.ScaleMode == Edible.ScalingMode.ScaleUp) m_scaler.ScaleUp(target.Mass);
