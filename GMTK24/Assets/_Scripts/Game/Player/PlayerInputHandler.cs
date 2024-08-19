@@ -1,7 +1,5 @@
 using com.game.input;
 using com.game.misc;
-using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,11 +12,16 @@ namespace com.game.player
 
         private void Awake()
         {
-            AddCallbacks();
+            //AddCallbacks();
+            Apply();
         }
 
-        void Apply(PlayerInputActions inputActions)
+        void Apply(/* PlayerInputActions inputActions*/)
         {
+            if (InputManager.Instance == null) return;
+
+            PlayerInputActions inputActions = InputManager.Instance.InputActions;
+
             // in-game
             inputActions.Player.Move.performed += OnMove;
             inputActions.Player.Move.canceled += OnStop;
@@ -134,16 +137,16 @@ namespace com.game.player
         #endregion
 
         #region Internal
-        void AddCallbacks()
-        {
-            StartCoroutine(C_AddCallbacks());
-        }
-        IEnumerator C_AddCallbacks()
-        {
-            if (InputManager.Instance == null) yield return new WaitUntil(() => InputManager.Instance != null);
+        //void AddCallbacks()
+        //{
+        //    StartCoroutine(C_AddCallbacks());
+        //}
+        //IEnumerator C_AddCallbacks()
+        //{
+        //    if (InputManager.Instance == null) yield return new WaitUntil(() => InputManager.Instance != null);
 
-            InputManager.Instance.AddAssetCallbacks(Apply);
-        }
+        //    InputManager.Instance.AddAssetCallbacks(Apply);
+        //}
 
         private void OnDestroy()
         {

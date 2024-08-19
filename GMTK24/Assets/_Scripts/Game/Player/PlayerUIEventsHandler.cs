@@ -1,4 +1,3 @@
-
 using com.absence.consolesystem;
 using com.absence.dialoguesystem;
 using com.game.menus;
@@ -116,6 +115,12 @@ namespace com.game.player
 
         public static void HandleInputMapping()
         {
+            if (Player.Instance == null)
+            {
+                InputManager.Instance.SwitchToUIMap();
+                return;
+            }
+
             if (Player.Instance.InDialogue)
             {
                 InputManager.Instance.SwitchToDialogueMap();

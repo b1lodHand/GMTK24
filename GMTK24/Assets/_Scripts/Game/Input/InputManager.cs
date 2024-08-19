@@ -87,11 +87,11 @@ namespace com.game.input
             StartCoroutine(C_EndRebind());
         }
 
-        public void AddAssetCallbacks(Action<PlayerInputActions> onInitialize)
-        {
-            if (m_initialized) onInitialize?.Invoke(m_inputActions);
-            else m_onInitialization += onInitialize;
-        }
+        //public void AddAssetCallbacks(Action<PlayerInputActions> onInitialize)
+        //{
+        //    if (m_initialized) onInitialize?.Invoke(m_inputActions);
+        //    else m_onInitialization += onInitialize;
+        //}
         #endregion
 
         protected override void Awake()

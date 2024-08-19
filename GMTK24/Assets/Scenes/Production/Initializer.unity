@@ -250,8 +250,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5ab12f17083ef0479b698897cb5e86a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_debugMode: 1
-  m_loadingScene:
+  m_debugMode: 0
+  m_utilitiesScene:
     m_AssetGUID: 70d0843f649bff545860a503627a7de0
     m_SubObjectName: 
     m_SubObjectType: 

@@ -11,7 +11,7 @@ namespace com.game.release.initialization
     {
         [SerializeField] private bool m_debugMode = false;
 
-        [SerializeField] private AssetReference m_loadingScene;
+        [SerializeField] private AssetReference m_utilitiesScene;
         [SerializeField] private AssetReference m_startingSceneRelease;
         [SerializeField] private AssetReference m_startingSceneDebug;
 
@@ -23,7 +23,7 @@ namespace com.game.release.initialization
         void SetupLoadingScene()
         {
             AsyncOperationHandle<SceneInstance> operation =
-                Addressables.LoadSceneAsync(m_loadingScene, LoadSceneMode.Additive, true);
+                Addressables.LoadSceneAsync(m_utilitiesScene, LoadSceneMode.Additive, true);
 
             operation.Completed += handle =>
             {
@@ -62,6 +62,8 @@ namespace com.game.release.initialization
 
         void Complete(SceneInstance startSceneInstance)
         {
+            Game.Initialized = true;
+
             AsyncOperation operation = startSceneInstance.ActivateAsync();
             operation.completed += handle =>
             {
